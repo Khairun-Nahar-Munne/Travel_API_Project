@@ -1,0 +1,8 @@
+flask
+flask-restful
+flask-swagger-ui
+passlib
+PyJWT
+marshmallow
+pyyaml
+pyOpenSSL
