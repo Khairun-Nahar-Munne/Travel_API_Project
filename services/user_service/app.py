@@ -1,4 +1,3 @@
-# services/user_service/app.py
 from flask import Flask, request, jsonify
 from flask_swagger_ui import get_swaggerui_blueprint
 import os
@@ -14,6 +13,7 @@ from services.auth_service.auth import authenticate_token
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your_secret_key_here'
+app.config['ADMIN_SECRET_KEY'] = 'your_admin_secret_key_here'
 
 # Initialize User Manager
 user_manager = UserManager()
@@ -31,17 +31,34 @@ app.register_blueprint(swaggerui_blueprint, url_prefix=SWAGGER_URL)
 @app.route('/register', methods=['POST'])
 def register():
     data = request.json
-    required_fields = ['name', 'email', 'password']
+    required_fields = ['name', 'email', 'password', 'role']
     
     # Validate input
     for field in required_fields:
         if field not in data:
             return jsonify({'error': f'Missing {field}'}), 400
     
+    # Check if role is valid
+    if data['role'] not in ['User', 'Admin']:
+        return jsonify({'error': 'Invalid role'}), 400
+    
+    # If registering as Admin, check for admin secret key in request body
+    if data['role'] == 'Admin':
+        admin_secret = data.get('admin_secret_key')
+        if not admin_secret:
+            return jsonify({'error': 'Admin secret key is required for admin registration'}), 401
+        if admin_secret != app.config['ADMIN_SECRET_KEY']:
+            return jsonify({'error': 'Invalid admin secret key'}), 403
+    
+    # Remove admin_secret_key from data before passing to register_user
+    if 'admin_secret_key' in data:
+        data.pop('admin_secret_key')
+    
     user_id = user_manager.register_user(
         data['name'], 
         data['email'], 
-        data['password']
+        data['password'], 
+        data['role']
     )
     
     if user_id:
@@ -77,7 +94,11 @@ def login():
 @app.route('/profile', methods=['GET'])
 @authenticate_token
 def get_profile(current_user):
-    profile = user_manager.get_user_profile(current_user['user_id'])
+    # Check if the user is an admin or requesting their own profile
+    if current_user['role'] == 'Admin':
+        profile = user_manager.get_all_users()
+    else:
+        profile = user_manager.get_user_profile(current_user['user_id'])
     
     if profile:
         return jsonify(profile), 200

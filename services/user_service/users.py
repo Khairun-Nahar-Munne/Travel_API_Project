@@ -52,3 +52,15 @@ class UserManager:
                 'role': user['role']
             }
         return None
+
+    def get_all_users(self):
+        # Returns all users (for admin access)
+        users = self.user_db.get_all_users()
+        return [
+            {
+                'id': user['id'],
+                'name': user['name'], 
+                'email': user['email'], 
+                'role': user['role']
+            } for user in users
+        ]

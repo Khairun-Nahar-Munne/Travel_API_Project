@@ -35,3 +35,8 @@ class UserDatabase:
             if user['email'] == email:
                 return user
         return None
+
+    def get_all_users(self):
+        # Returns all users in the database
+        users = self._load_users()
+        return list(users.values())
