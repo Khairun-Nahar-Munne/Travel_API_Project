@@ -1,36 +1,49 @@
-# services/destination_service/destinations.py
 import uuid
+import os
+import sys
+sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+
+from data.destinations import DestinationDatabase
 
 class DestinationManager:
     def __init__(self):
-        # Using a dictionary to store destinations
-        self.destinations = {
-            str(uuid.uuid4()): {
-                'name': 'Paris',
-                'description': 'City of Lights',
-                'location': 'France'
-            },
-            str(uuid.uuid4()): {
-                'name': 'Tokyo',
-                'description': 'Modern metropolis',
-                'location': 'Japan'
-            }
-        }
+        self.db = DestinationDatabase()
+        self._initialize_default_destinations()
 
-    def get_all_destinations(self):
-        return list(self.destinations.values())
+    def _initialize_default_destinations(self):
+        if not self.db.get_all_destinations():
+            default_destinations = [
+                {
+                    'id': str(uuid.uuid4()),
+                    'name': 'Paris',
+                    'description': 'City of Lights',
+                    'location': 'France'
+                },
+                {
+                    'id': str(uuid.uuid4()),
+                    'name': 'Tokyo',
+                    'description': 'Modern metropolis',
+                    'location': 'Japan'
+                }
+            ]
+            for dest in default_destinations:
+                self.db.add_destination(dest)
+
+    def get_all_destinations(self, is_admin=False):
+        destinations = self.db.get_all_destinations()
+        # If not admin, explicitly remove the ID field
+        
+        return destinations
 
     def delete_destination(self, destination_id):
-        if destination_id in self.destinations:
-            del self.destinations[destination_id]
-            return True
-        return False
+        return self.db.delete_destination(destination_id)
 
     def add_destination(self, name, description, location):
-        destination_id = str(uuid.uuid4())
-        self.destinations[destination_id] = {
+        destination = {
+            'id': str(uuid.uuid4()),
             'name': name,
             'description': description,
             'location': location
         }
-        return destination_id
+        self.db.add_destination(destination)
+        return destination['id']

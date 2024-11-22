@@ -1,4 +1,4 @@
-# data/destinations.py
+# data/destination_database.py
 import os
 
 class DestinationDatabase:
@@ -13,8 +13,8 @@ class DestinationDatabase:
 
     def _load_destinations(self):
         with open(self.filename, 'r') as f:
-            exec(f.read())
-        return locals()['destinations']
+            exec(f.read(), globals())
+            return globals()['destinations']
 
     def _save_destinations(self, destinations):
         with open(self.filename, 'w') as f:
@@ -24,6 +24,14 @@ class DestinationDatabase:
         destinations = self._load_destinations()
         destinations[destination['id']] = destination
         self._save_destinations(destinations)
+
+    def delete_destination(self, destination_id):
+        destinations = self._load_destinations()
+        if destination_id in destinations:
+            del destinations[destination_id]
+            self._save_destinations(destinations)
+            return True
+        return False
 
     def get_destination_by_id(self, destination_id):
         destinations = self._load_destinations()

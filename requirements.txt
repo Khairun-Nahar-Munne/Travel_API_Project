@@ -6,3 +6,7 @@ PyJWT
 marshmallow
 pyyaml
 pyOpenSSL
+pytest
+pytest-flask
+pytest-cov
+pytest-mock

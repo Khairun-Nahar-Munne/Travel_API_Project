@@ -4,6 +4,7 @@ import os
 import sys
 import jwt
 import datetime
+import re
 
 # Add parent directory to Python path
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
@@ -18,6 +19,11 @@ app.config['ADMIN_SECRET_KEY'] = 'your_admin_secret_key_here'
 # Initialize User Manager
 user_manager = UserManager()
 
+def is_valid_email(email):
+    """Validate email format using regex pattern."""
+    email_pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+    return bool(re.match(email_pattern, email))
+
 # Swagger Configuration
 SWAGGER_URL = '/docs'
 API_URL = '/static/swagger.yaml'
@@ -31,23 +37,37 @@ app.register_blueprint(swaggerui_blueprint, url_prefix=SWAGGER_URL)
 @app.route('/register', methods=['POST'])
 def register():
     data = request.json
+    if not data:
+        return jsonify({'error': 'Request body is required'}), 400
+
     required_fields = ['name', 'email', 'password', 'role']
+    missing_fields = [field for field in required_fields if not data.get(field)]
     
-    # Validate input
+    # Validate required fields
+    if missing_fields:
+        return jsonify({'error': f'Missing required fields: {", ".join(missing_fields)}'}), 400
+    
+    # Validate field types and empty values
     for field in required_fields:
-        if field not in data:
-            return jsonify({'error': f'Missing {field}'}), 400
+        if not isinstance(data[field], str):
+            return jsonify({'error': f'{field} must be a string'}), 400
+        if not data[field].strip():
+            return jsonify({'error': f'{field} cannot be empty'}), 400
+            
+    # Validate email format
+    if not is_valid_email(data['email'].strip()):
+        return jsonify({'error': 'Invalid email format'}), 400
     
     # Check if role is valid
     if data['role'] not in ['User', 'Admin']:
-        return jsonify({'error': 'Invalid role'}), 400
+        return jsonify({'error': 'Invalid role. Must be either User or Admin'}), 400
     
     # If registering as Admin, check for admin secret key in request body
     if data['role'] == 'Admin':
         admin_secret = data.get('admin_secret_key')
         if not admin_secret:
             return jsonify({'error': 'Admin secret key is required for admin registration'}), 401
-        if admin_secret != app.config['ADMIN_SECRET_KEY']:
+        if not isinstance(admin_secret, str) or admin_secret != app.config['ADMIN_SECRET_KEY']:
             return jsonify({'error': 'Invalid admin secret key'}), 403
     
     # Remove admin_secret_key from data before passing to register_user
@@ -55,8 +75,8 @@ def register():
         data.pop('admin_secret_key')
     
     user_id = user_manager.register_user(
-        data['name'], 
-        data['email'], 
+        data['name'].strip(), 
+        data['email'].strip(), 
         data['password'], 
         data['role']
     )
@@ -68,12 +88,28 @@ def register():
 @app.route('/login', methods=['POST'])
 def login():
     data = request.json
+    if not data:
+        return jsonify({'error': 'Request body is required'}), 400
     
-    # Validate input
-    if 'email' not in data or 'password' not in data:
-        return jsonify({'error': 'Missing email or password'}), 400
+    required_fields = ['email', 'password']
+    missing_fields = [field for field in required_fields if not data.get(field)]
     
-    user = user_manager.authenticate_user(data['email'], data['password'])
+    # Validate required fields
+    if missing_fields:
+        return jsonify({'error': f'Missing required fields: {", ".join(missing_fields)}'}), 400
+    
+    # Validate field types and empty values
+    for field in required_fields:
+        if not isinstance(data[field], str):
+            return jsonify({'error': f'{field} must be a string'}), 400
+        if not data[field].strip():
+            return jsonify({'error': f'{field} cannot be empty'}), 400
+            
+    # Validate email format
+    if not is_valid_email(data['email'].strip()):
+        return jsonify({'error': 'Invalid email format'}), 400
+    
+    user = user_manager.authenticate_user(data['email'].strip(), data['password'])
     
     if user:
         # Create JWT token

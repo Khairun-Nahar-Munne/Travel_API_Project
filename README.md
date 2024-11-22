@@ -10,6 +10,7 @@ Each microservice is independent and communicates over HTTP, adhering to OpenAPI
 
 ## Table of Contents
 - [Features](#features)
+- [Project Structure](#project-structure)
 - [Endpoints](#endpoints)
 - [Setup and Installation](#setup-and-installation)
 - [Running the Services](#running-the-services)
@@ -25,6 +26,39 @@ Each microservice is independent and communicates over HTTP, adhering to OpenAPI
 - Role-based access control for secure endpoints.
 - Input validation and error handling.
 - OpenAPI-compliant documentation using Swagger UI.
+
+## Project Structure
+
+```
+
+travel-microservices/
+│
+├── services/
+│   ├── destination_service/
+│   │   ├── init.py
+│   │   ├── app.py
+│   │   ├── destinations.py
+│   │   └── swagger.yaml
+│   │
+│   ├── user_service/
+│   │   ├── init.py
+│   │   ├── app.py
+│   │   ├── users.py
+│   │   └── swagger.yaml
+│   │
+│   └── auth_service/
+│       ├── init.py
+│       ├── app.py
+│       ├── auth.py
+│       └── swagger.yaml
+│
+├── data/
+│   ├── destinations.py
+│   └── users.py
+│
+├── requirements.txt
+└── README.md
+```
 
 ## Endpoints
 

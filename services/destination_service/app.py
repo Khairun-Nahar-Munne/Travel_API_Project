@@ -4,7 +4,6 @@ from flask_swagger_ui import get_swaggerui_blueprint
 import os
 import sys
 
-# Add parent directory to Python path
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
 from services.destination_service.destinations import DestinationManager
@@ -12,10 +11,8 @@ from services.auth_service.auth import authenticate_token, is_admin
 
 app = Flask(__name__)
 
-# Initialize Destination Manager
 destination_manager = DestinationManager()
 
-# Swagger Configuration
 SWAGGER_URL = '/docs'
 API_URL = '/static/swagger.yaml'
 swaggerui_blueprint = get_swaggerui_blueprint(
@@ -29,8 +26,28 @@ app.register_blueprint(swaggerui_blueprint, url_prefix=SWAGGER_URL)
 @authenticate_token
 def get_destinations(current_user):
     try:
-        destinations = destination_manager.get_all_destinations()
+        # Fix: Properly check admin status from the current_user object
+        admin_status = bool(getattr(current_user, 'is_admin', False))
+        destinations = destination_manager.get_all_destinations(is_admin=admin_status)
         return jsonify(destinations), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/destinations', methods=['POST'])
+@authenticate_token
+@is_admin
+def add_destination(current_user):
+    try:
+        data = request.get_json()
+        if not all(k in data for k in ('name', 'description', 'location')):
+            return jsonify({'error': 'Missing required fields'}), 400
+        
+        destination_id = destination_manager.add_destination(
+            data['name'],
+            data['description'],
+            data['location']
+        )
+        return jsonify({'message': 'Destination added successfully', 'id': destination_id}), 201
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 

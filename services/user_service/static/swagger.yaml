@@ -6,7 +6,7 @@ info:
 paths:
   /register:
     post:
-      summary: Register a new user
+      summary: Register a new user or admin. Put "Admin" in role field and put admin_secret_key to register as admin 
       requestBody:
         content:
           application/json:
@@ -16,19 +16,29 @@ paths:
                 - name
                 - email
                 - password
+                - role
               properties:
                 name:
                   type: string
+                  example: "John Doe"
                 email:
                   type: string
+                  example: "JohnDoe@gmail.com"
                 password:
                   type: string
+                  example: "*******"
+                role:
+                  type: string
+                  example: "User"
+                admin_secret_key:
+                  type: string
+                  example: "*******"
       responses:
         "201":
           description: User registered successfully
   /login:
     post:
-      summary: Authenticate user and get token
+      summary: Authenticate user/admin and get token
       requestBody:
         content:
           application/json:
