@@ -142,18 +142,19 @@ Handles user authentication and role-based access to endpoints.
 
 3. **Activate Virtual Environment**:
 
-On Linux:
-   ```bash
-   source myenv/bin/activate
-```
-On Windows:
-   ```bash
-  myenv\Scripts\activate
-```
+   On Linux:
+      ```bash
+      source myenv/bin/activate
+   ```
+   On Windows:
+      ```bash
+   myenv\Scripts\activate
+   ```
 4. **Install Dependencies**:
 
    ```bash
  pip install -r requirements.txt
+ ```
  
 
 ## Running Services
