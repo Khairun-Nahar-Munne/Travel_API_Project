@@ -14,15 +14,15 @@ Each microservice is independent and communicates over HTTP, adhering to OpenAPI
 - [Endpoints](#endpoints)
 - [Role-Based Access Control](#role-based-access-control)
 - [Setup and Installation](#setup-and-installation)
-- [Running the Services](#running-the-services)
+- [Running Services](#running-services)
 - [OpenAPI Documentation](#openapi-documentation)
 - [Testing](#testing)
 - [Error Handling](#error-handling)
 - [Contributing](#contributing)
 
 ## Features
-- User registration, login, and profile management.
-- CRUD operations for travel destinations (Admins only for deletion).
+- User registration, login, and profile management (Admins only for getting all profiles)
+- View all travel destinations (Admins only for deletion and creation).
 - Role-based access control for secure endpoints.
 - Input validation and error handling.
 - OpenAPI-compliant documentation using Swagger UI.
@@ -154,7 +154,7 @@ Handles user authentication and role-based access to endpoints.
 4. **Install Dependencies**:
 
    ```bash
-      pip install -r requirements.txt
+   pip install -r requirements.txt
       ```
  
 ## Running Services
@@ -187,7 +187,7 @@ OpenAI documenation is available through Swagger UI for each service:
 
    To register as an admin, you have to put  "Admin" in role property field and "your_admin_secret_key_here" in  admin_secret_key property field. After login, you will get authentication token. To get all profiles, you have to put this authentication token in authorize filed and login with this token as admin. 
 
-   To register as an user, you have to put "User" in role property field.  After login, you will get authentication token. To get own, you have to put this authentication token in authorize filed and login with this token as user. 
+   To register as an user, you have to put "User" in role property field.  After login, you will get authentication token. To get own profile, you have to put this authentication token in authorize filed and login with this token as user. 
 
 - Authentication Service: http://127.0.0.1:5003/docs/
 
@@ -195,13 +195,13 @@ OpenAI documenation is available through Swagger UI for each service:
 
 - Destination Service: http://127.0.0.1:5001/docs/
 
-   After login in user service, you will get authentication token. To view all destinations, you have to put this authentication token in authorize filed and login with this token. 
+   After login in user service, you will get authentication token. To view all destinations, you have to put this authentication token in authorize field and login with this token. 
 
    Admin can also post destinations and delete any destination through the id of the destinqation.
 
 ## Testing
 
-To test the services, run the test suite using unittest. Each microservice includes a tests folder named tests. To execute the test suite, navigate to the root directory of the project in your terminal window and enter:
+To test the services, run the test suite using unittest. Each microservice includes a test folder named tests. To execute the test suite, navigate to the root directory of the project in your terminal window and enter:
 
 ### **User Service**
 
