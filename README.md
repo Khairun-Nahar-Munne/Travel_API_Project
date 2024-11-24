@@ -84,7 +84,7 @@ travel-microservices/
 | Method | Endpoint                       | Description                        | Access |
 |--------|--------------------------------|------------------------------------|--------|
 | GET    | `/destinations`                | Retrieve a list of all destinations | Public |
-| POST   | `/destinations`                | Post a  destination                 | Admin  |
+| POST   | `/destinations`                | Add a new destination               | Admin  |
 | DELETE | `/destinations/<id>`           | Delete a specific destination       | Admin  |
 
 **Destination Details**:
@@ -104,6 +104,7 @@ travel-microservices/
 - **Email**: Email address (string)
 - **Password**: Hashed password (string)
 - **Role**: User role ("Admin" or "User")
+- **Admin Secret Key**: Admin secret key to register as admin rolw
 
 ### **Authentication Service**
 Handles user authentication and role-based access to endpoints.
@@ -185,23 +186,23 @@ OpenAI documenation is available through Swagger UI for each service:
 
 - User Service: http://127.0.0.1:5002/docs/
 
-To register as an admin, you have to put  "Admin" in role property field and "your_admin_secret_key_here" in  admin_secret_key. After login, you will get authentication token. To get all profiles, you have to put this authentication token in authorize filed and login with this token as admin. 
+   To register as an admin, you have to put  "Admin" in role property field and "your_admin_secret_key_here" in  admin_secret_key property field. After login, you will get authentication token. To get all profiles, you have to put this authentication token in authorize filed and login with this token as admin. 
 
-To register as an user, you have to put "User" in role property field.  After login, you will get authentication token. To get own, you have to put this authentication token in authorize filed and login with this token as user. 
+   To register as an user, you have to put "User" in role property field.  After login, you will get authentication token. To get own, you have to put this authentication token in authorize filed and login with this token as user. 
 
 - Authentication Service: http://127.0.0.1:5003/docs/
 
-After login in user service, you will get authentication token. To view own role, you have to put this authentication token in authorize filed and login with this token. You can view your role. 
+   After login in user service, you will get authentication token. To view own role, you have to put this authentication token in authorize filed and login with this token. You can view your role. 
 
 - Destination Service: http://127.0.0.1:5001/docs/
 
-After login in user service, you will get authentication token. To view all destinations, you have to put this authentication token in authorize filed and login with this token. 
+   After login in user service, you will get authentication token. To view all destinations, you have to put this authentication token in authorize filed and login with this token. 
 
-Admin can also post destinations and delete any destination through the id of the destinqation.
+   Admin can also post destinations and delete any destination through the id of the destinqation.
 
 ## Testing
 
-To test the services, run the test suite using unittest. Each microservice includes a tests folder named tests which contains all of the tests for each service. To execute the test suite, navigate to the root directory of the project in your terminal window and enter:
+To test the services, run the test suite using unittest. Each microservice includes a tests folder named tests. To execute the test suite, navigate to the root directory of the project in your terminal window and enter:
 
 ### **User Service**
 
