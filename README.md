@@ -154,10 +154,9 @@ Handles user authentication and role-based access to endpoints.
 4. **Install Dependencies**:
 
    ```bash
- pip install -r requirements.txt
- ```
+      pip install -r requirements.txt
+      ```
  
-
 ## Running Services
 
 ### **User Service**
