@@ -1,13 +1,15 @@
-# services/user_service/swagger.yaml
 openapi: 3.0.0
 info:
   title: Travel User Service
   version: 1.0.0
+  description: API for user management including registration, authentication, and profile management
 paths:
   /register:
     post:
-      summary: Register a new user or admin. Put "Admin" in role field and put admin_secret_key to register as admin 
+      summary: Register a new user or admin
+      description: Register a new user or admin. Include "Admin" in role field and provide admin_secret_key to register as admin
       requestBody:
+        required: true
         content:
           application/json:
             schema:
@@ -21,25 +23,76 @@ paths:
                 name:
                   type: string
                   example: "John Doe"
+                  minLength: 2
+                  maxLength: 50
                 email:
                   type: string
+                  format: email
                   example: "JohnDoe@gmail.com"
                 password:
                   type: string
+                  format: password
                   example: "*******"
+                  minLength: 8
                 role:
                   type: string
+                  enum: ["User", "Admin"]
                   example: "User"
                 admin_secret_key:
                   type: string
                   example: "*******"
+                  description: Required only when registering as Admin. Otherwise, remove it or keep it, it will be ignored.
       responses:
         "201":
           description: User registered successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "User registered successfully"
+                  userId:
+                    type: string
+                    format: uuid
+                    example: "123e4567-e89b-12d3-a456-426614174000"
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Invalid email format"
+        "409":
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Email already registered"
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Invalid admin_secret_key"
+
   /login:
     post:
       summary: Authenticate user/admin and get token
       requestBody:
+        required: true
         content:
           application/json:
             schema:
@@ -50,25 +103,110 @@ paths:
               properties:
                 email:
                   type: string
+                  format: email
+                  example: "JohnDoe@gmail.com"
                 password:
                   type: string
+                  format: password
+                  example: "*******"
       responses:
         "200":
           description: Login successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                  user:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                      name:
+                        type: string
+                      email:
+                        type: string
+                      role:
+                        type: string
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Invalid credentials"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "User not found"
+
   /profile:
     get:
       summary: Get user profile
+      description: Retrieve the profile information of the authenticated user
       security:
         - bearerAuth: []
       responses:
         "200":
           description: User profile retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                  name:
+                    type: string
+                  email:
+                    type: string
+                  role:
+                    type: string
+                  createdAt:
+                    type: string
+                    format: date-time
+                  updatedAt:
+                    type: string
+                    format: date-time
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Invalid or expired token"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Profile not found"
+
 components:
   securitySchemes:
     bearerAuth:
       type: http
       scheme: bearer
       bearerFormat: JWT
-
-# Add this to the existing swagger.yaml
-    
+      description: JWT token obtained from login endpoint

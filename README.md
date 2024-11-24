@@ -26,17 +26,19 @@ Each microservice is independent and communicates over HTTP, adhering to OpenAPI
 - Role-based access control for secure endpoints.
 - Input validation and error handling.
 - OpenAPI-compliant documentation using Swagger UI.
+- Testing through Unittest
+- Test Coverage of Each Foder up to 70%
 
 ## Project Structure
 
 ```
 
-travel-microservices/
+travel-api-project/
 │
 ├── services/
 │   ├── destination_service/
 │   │   ├── tests
-|   |   |    ├── test_
+|   |   |    ├── test_app.py
 |   |   |    └── test_destinations.py
 │   │   ├── static
 |   |   |    └── swagger.yaml
@@ -104,7 +106,7 @@ travel-microservices/
 - **Email**: Email address (string)
 - **Password**: Hashed password (string)
 - **Role**: User role ("Admin" or "User")
-- **Admin Secret Key**: Admin secret key to register as admin rolw
+- **Admin Secret Key**: Admin secret key to register as admin role.
 
 ### **Authentication Service**
 Handles user authentication and role-based access to endpoints.
@@ -239,7 +241,17 @@ To test the services, run the test suite using unittest. Each microservice inclu
    - coverage run -m unittest discover -s services/destination_service/tests
    - coverage report
    ```
+### **Data**
 
+   ```bash
+   python3 -m unittest discover -s data/tests
+   ```
+
+  For Coverage report:
+   ```bash
+   - coverage run -m unittest discover -s data/tests
+   - coverage report
+   ```
 ## Error Handling
 
 - Input validation for all endpoints.

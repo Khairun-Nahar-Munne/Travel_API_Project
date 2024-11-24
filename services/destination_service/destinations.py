@@ -31,8 +31,6 @@ class DestinationManager:
 
     def get_all_destinations(self, is_admin=False):
         destinations = self.db.get_all_destinations()
-        # If not admin, explicitly remove the ID field
-        
         return destinations
 
     def delete_destination(self, destination_id):
