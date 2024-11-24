@@ -12,11 +12,11 @@ Each microservice is independent and communicates over HTTP, adhering to OpenAPI
 - [Features](#features)
 - [Project Structure](#project-structure)
 - [Endpoints](#endpoints)
+- [Role-Based Access Control](#role-based-access-control)
 - [Setup and Installation](#setup-and-installation)
 - [Running the Services](#running-the-services)
+- [OpenAPI Documentation](#openapi-documentation)
 - [Testing](#testing)
-- [API Documentation](#api-documentation)
-- [Role-Based Access Control](#role-based-access-control)
 - [Error Handling](#error-handling)
 - [Contributing](#contributing)
 
@@ -35,24 +35,42 @@ travel-microservices/
 │
 ├── services/
 │   ├── destination_service/
+│   │   ├── tests
+|   |   |    ├── test_
+|   |   |    └── test_destinations.py
+│   │   ├── static
+|   |   |    └── swagger.yaml
 │   │   ├── init.py
 │   │   ├── app.py
-│   │   ├── destinations.py
-│   │   └── swagger.yaml
+│   │   └──  destinations.py
 │   │
 │   ├── user_service/
+│   │   ├── tests  
+│   │   │     ├── test_app.py
+│   │   │     └── test_users.py
+│   │   ├── static
+|   |   |     └── swagger.yaml
 │   │   ├── init.py
 │   │   ├── app.py
-│   │   ├── users.py
-│   │   └── swagger.yaml
+│   │   └── users.py
 │   │
 │   └── auth_service/
+│       ├── tests  
+│       │     ├── test_auth_app.py
+│       │     └── test_auth.py
+│       ├── static
+|       |     └── swagger.yaml
 │       ├── init.py
 │       ├── app.py
-│       ├── auth.py
-│       └── swagger.yaml
+│       └── auth.py
 │
 ├── data/
+│   ├── tests  
+│   │     ├── test_destinations.py
+│   │     └── test_users.py
+│   ├── test_users_data.py'
+│   ├── destinations_data.py
+│   ├── users_data.py
 │   ├── destinations.py
 │   └── users.py
 │
@@ -66,6 +84,7 @@ travel-microservices/
 | Method | Endpoint                       | Description                        | Access |
 |--------|--------------------------------|------------------------------------|--------|
 | GET    | `/destinations`                | Retrieve a list of all destinations | Public |
+| POST   | `/destinations`                | Post a  destination                 | Admin  |
 | DELETE | `/destinations/<id>`           | Delete a specific destination       | Admin  |
 
 **Destination Details**:
@@ -89,6 +108,14 @@ travel-microservices/
 ### **Authentication Service**
 Handles user authentication and role-based access to endpoints.
 
+## Role-Based Access Control
+
+- Admin: Full access to all endpoints, including the ability to register and login as admin, get all users, post and delete destinations.
+
+- User: Limited access, mainly for registration, login, viewing destinations and managing personal profiles.
+
+- Token Authentication: All authenticated requests require a Bearer Token in the Authorization header.
+
 ## Setup and Installation
 
 ### Prerequisites
@@ -103,5 +130,147 @@ Handles user authentication and role-based access to endpoints.
 
 1. **Clone the Repository**:
    ```bash
-   git clone https://github.com/yourusername/travel-api-microservices.git
+   git clone https://github.com/Khairun-Nahar-Munne/Travel_API_Project.git
    cd travel-api-microservices
+   ```
+
+2. **Create Virtual Environment**:
+
+   ```bash
+   python3 -m venv myenv
+   ```
+
+3. **Activate Virtual Environment**:
+
+On Linux:
+   ```bash
+   source myenv/bin/activate
+```
+On Windows:
+   ```bash
+  myenv\Scripts\activate
+```
+4. **Install Dependencies**:
+
+   ```bash
+ pip install -r requirements.txt
+ 
+
+## Running Services
+
+### **User Service**
+ ```bash
+   cd services
+   cd user_service
+   python3 app.py
+   ```
+
+### **Authentication Service**
+ ```bash
+   cd services
+   cd destination_service
+   python3 app.py
+   ```
+
+### **Destination Service**
+ ```bash
+   cd services
+   cd destination_service
+   python3 app.py
+   ```
+## OpenAPI documentation 
+OpenAI documenation is available through Swagger UI for each service:
+
+
+- User Service: http://127.0.0.1:5002/docs/
+
+To register as an admin, you have to put  "Admin" in role property field and "your_admin_secret_key_here" in  admin_secret_key. After login, you will get authentication token. To get all profiles, you have to put this authentication token in authorize filed and login with this token as admin. 
+
+To register as an user, you have to put "User" in role property field.  After login, you will get authentication token. To get own, you have to put this authentication token in authorize filed and login with this token as user. 
+
+- Authentication Service: http://127.0.0.1:5003/docs/
+
+After login in user service, you will get authentication token. To view own role, you have to put this authentication token in authorize filed and login with this token. You can view your role. 
+
+- Destination Service: http://127.0.0.1:5001/docs/
+
+After login in user service, you will get authentication token. To view all destinations, you have to put this authentication token in authorize filed and login with this token. 
+
+Admin can also post destinations and delete any destination through the id of the destinqation.
+
+## Testing
+
+To test the services, run the test suite using unittest. Each microservice includes a tests folder named tests which contains all of the tests for each service. To execute the test suite, navigate to the root directory of the project in your terminal window and enter:
+
+### **User Service**
+
+ ```bash
+   python3 -m unittest discover -s services/user_service/tests
+   ```
+
+  For Coverage report:
+   ```bash
+   - coverage run -m unittest discover -s services/user_service/tests
+   - coverage report
+   ```
+
+### **Authentication Service**
+
+ ```bash
+   python3 -m unittest discover -s services/auth_service/tests
+   ```
+
+  For Coverage report:
+   ```bash
+   - coverage run -m unittest discover -s services/auth_service/tests
+   - coverage report
+   ```
+
+
+### **Destination Service**
+
+   ```bash
+   python3 -m unittest discover -s services/destination_service/tests
+   ```
+
+  For Coverage report:
+   ```bash
+   - coverage run -m unittest discover -s services/destination_service/tests
+   - coverage report
+   ```
+
+## Error Handling
+
+- Input validation for all endpoints.
+- Custom error messages for missing fields, invalid inputs, and unauthorized access.
+- 404 Not Found for non-existent resources.
+- 400 Bad Request for invalid data formats
+
+## Contributing
+Contributions are welcome! Here's how you can contribute:
+
+### Fork the Repository
+```bash
+- git clone https://github.com/Khairun-Nahar-Munne/Travel_API_Project.git
+- cd Travel_API_Project
+```
+### Create a New Branch
+
+```bash
+- git checkout -b feature/add-new-feature
+```
+### Make Modifications and Commit Changes
+```bash
+- git commit -m 'Add new feature: [brief description of the feature]'
+
+```
+### Push Changes to the Branch
+
+```bash
+- git push origin feature/add-new-feature
+
+```
+### Create a New Pull Request
+- Navigate to the repository on GitHub.
+- Click on the "Compare & pull request" button.
+- Fill in the pull request details and submit it for review.
