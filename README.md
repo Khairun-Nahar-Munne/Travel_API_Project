@@ -23,11 +23,11 @@ Each microservice is independent and communicates over HTTP, adhering to OpenAPI
 ## Features
 - User registration, login, and profile management (Admins only for getting all profiles)
 - View all travel destinations (Admins only for deletion and creation).
-- Role-based access control for secure endpoints.
+- Role-based access control to secure endpoints.
 - Input validation and error handling.
 - OpenAPI-compliant documentation using Swagger UI.
 - Testing through Unittest
-- Test Coverage of Each Foder up to 70%
+- Test Coverage of Each Folder up to 70%
 
 ## Project Structure
 
@@ -193,7 +193,7 @@ OpenAI documenation is available through Swagger UI for each service:
 
 - Authentication Service: http://127.0.0.1:5003/docs/
 
-   After login in user service, you will get authentication token. To view own role, you have to put this authentication token in authorize filed and login with this token. You can view your role. 
+   After login in user service, you will get authentication token. To view your own role, you have to put this authentication token in authorize filed and login with this token. 
 
 - Destination Service: http://127.0.0.1:5001/docs/
 
