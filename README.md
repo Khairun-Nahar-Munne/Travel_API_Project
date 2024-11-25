@@ -189,7 +189,7 @@ OpenAI documenation is available through Swagger UI for each service:
 
    To register as an admin, you have to put  "Admin" in role property field and "your_admin_secret_key_here" in  admin_secret_key property field. After login, you will get authentication token. To get all profiles, you have to put this authentication token in authorize filed and login with this token as admin. 
 
-   To register as an user, you have to put "User" in role property field.  After login, you will get authentication token. To get own profile, you have to put this authentication token in authorize filed and login with this token as user. 
+   To register as an user, you have to put "User" in role property field. You can remove or keep admin_secret_key during registration, it will be ignored automatically. After login, you will get authentication token. To get own profile, you have to put this authentication token in authorize filed and login with this token as user. 
 
 - Authentication Service: http://127.0.0.1:5003/docs/
 
@@ -199,7 +199,7 @@ OpenAI documenation is available through Swagger UI for each service:
 
    After login in user service, you will get authentication token. To view all destinations, you have to put this authentication token in authorize field and login with this token. 
 
-   Admin can also post destinations and delete any destination through the id of the destinqation.
+   Admin can also post destinations and delete any destination through the id of the destination.
 
 ## Testing
 

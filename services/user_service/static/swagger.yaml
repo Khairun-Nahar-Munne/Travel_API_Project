@@ -8,6 +8,8 @@ paths:
     post:
       summary: Register a new user or admin
       description: Register a new user or admin. Include "Admin" in role field and provide admin_secret_key to register as admin
+      tags:
+        - Authentication
       requestBody:
         required: true
         content:
@@ -41,7 +43,7 @@ paths:
                 admin_secret_key:
                   type: string
                   example: "*******"
-                  description: Required only when registering as Admin. Otherwise, remove it or keep it, it will be ignored.
+                  description: Required only when registering as Admin
       responses:
         "201":
           description: User registered successfully
@@ -91,6 +93,8 @@ paths:
   /login:
     post:
       summary: Authenticate user/admin and get token
+      tags:
+        - Authentication
       requestBody:
         required: true
         content:
@@ -157,6 +161,8 @@ paths:
     get:
       summary: Get user profile
       description: Retrieve the profile information of the authenticated user
+      tags:
+        - Profile
       security:
         - bearerAuth: []
       responses:
